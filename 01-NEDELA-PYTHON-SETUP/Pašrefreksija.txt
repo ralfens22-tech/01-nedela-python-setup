@@ -1,4 +1,4 @@
-#Koncepti
+ #Koncepti
 1. Kas ir programma? Kā tu to izskaidrotu cilvēkam, kurš nekad nav programmējis?
 Programma ir instrukciju kopums, ko dators izpilda, lai paveiktu kādu uzdevumu.
 
