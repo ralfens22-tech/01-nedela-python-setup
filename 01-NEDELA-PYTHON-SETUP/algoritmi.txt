@@ -17,4 +17,4 @@
 2.6 Sagaidīt, kamēr kafija tiek pagatavota.
 2.7 Paņemt kafiju.
 2.8 Pateicies pārdevējai/am un pamet notikuma vietu.
-2.9 Process beidzas.
+2.9 Process beidzas
