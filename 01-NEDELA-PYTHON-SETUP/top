@@ -12,3 +12,4 @@ credential.helper=manager
 credential.https://dev.azure.com.usehttppath=true
 init.defaultbranch=master
 core.editor="C:\Users\ralfe\AppData\Local\Programs\Microsoft VS Code\bin\code" --wait
+s
