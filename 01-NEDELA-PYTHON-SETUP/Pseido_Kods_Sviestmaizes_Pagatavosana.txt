@@ -1,0 +1,23 @@
+START
+
+Paņem maizi
+
+IF Vai maize nav grauzdēta? THEN
+    Grauzdē maizi
+END IF
+
+IF Vai mājās ir sviests? THEN
+    Uzsmērē sviestu
+ELSE
+    Izlaid sviestu
+END IF
+
+IF Vai mājās ir zapte? THEN
+    Uzsmērē zapti
+ELSE
+    Izlaid zapti
+END IF
+
+PRINT "Sviestmaize gatava"
+
+END

@@ -1,0 +1,56 @@
+#Koncepti
+1. Kas ir programma? Kā tu to izskaidrotu cilvēkam, kurš nekad nav programmējis?
+Programma ir instrukciju kopums, ko dators izpilda, lai paveiktu kādu uzdevumu.
+
+2. Kas ir algoritms? Kā tas atšķiras no vienkāršas instrukcijas?
+Algoritms ir skaidra, secīga darbību virkne, kas apraksta, kā atrisināt kādu problēmu vai izpildīt uzdevumu. Tas sastāv no vairākiem soļiem, kas jāveic noteiktā kārtībā.
+
+3. Kādas trīs īpašības padara algoritmu derīgu (valid)? Pastāsti katru saviem vārdiem un dod piemēru, kas šo īpašību pārkāpj.
+3.1 Skaidri definēti soļi
+3.2 Galīgums (beidzas)
+3.3 Secīgums / loģiska kārtība
+
+4. Ko nozīmē “secīga izpilde” (sequential execution)? Kāpēc datoram ir svarīgi, kādā secībā soļi tiek izpildīti? 
+4.1 Secīga izpilde nozīmē, ka dators izpilda instrukcijas tieši tādā secībā, kādā tās ir uzrakstītas kodā – no pirmās līdz pēdējai.
+4.2 Secība ir svarīga, jo dažas darbības ir atkarīgas no iepriekšējām. Ja secība tiek sajaukta, programma var nedarboties pareizi. Piemēram, nevar izdrukāt rezultātu pirms tas ir aprēķināts.
+
+5. Izskaidro modeli “ievade → apstrāde → izvade” ar vienu konkrētu piemēru no ikdienas vai no sava mājasdarba.
+5.1 Ievade - Lietotājs ievada kalkulatorā 3+6
+5.2 Apstrāde - Programma informāciju apstrādā
+5.3 Izvade - Programma izvada rezultātu 9
+
+6. Kas ir interpretators (interpreter) un ko tas dara ar tavu Python kodu?
+Interpretators ir programma, kas nolasa un izpilda programmēšanas valodā rakstīto kodu. Python interpretators lasa kodu rindu pa rindai un uzreiz izpilda katru instrukciju. Tas nozīmē, ka kods tiek izpildīts uzreiz, nevis vispirms pilnībā pārtulkots kā citās valodās.
+
+7. Kāda ir procesora (CPU) un atmiņas (memory) loma programmas izpildē? Izskaidro vienkāršoti, saviem vārdiem.
+7.1 Procesors (CPU) ir datora daļa, kas izpilda instrukcijas un veic aprēķinus.
+7.2 Atmiņa (RAM) ir vieta, kur programma glabā datus, kamēr tā darbojas.
+
+8. Kas notiek, ja tavā kodā ir sintakses kļūda? Kāpēc programma netiek izpildīta pat daļēji?
+Ja kodā ir sintakses kļūda, interpretators nevar saprast instrukciju un programma netiek palaista. Python uzreiz parāda kļūdas paziņojumu un norāda, kurā rindā ir problēma. Programma netiek izpildīta pat daļēji, jo dators nevar interpretēt nepareizi uzrakstītu komandu.
+
+
+
+#Praktiskie darbi
+9. Vai Python ir veiksmīgi uzstādīts tavā datorā? Kādu Python versiju parāda python --version?
+Python 3.14.3
+
+10. Vai tu spēj palaist kodu no termināļa vai IDE? Apraksti, kā tu to dari — kādus soļus veic.
+Spēju palaist kodu no termināļa. .py failam ir "Run" poga labajā augšējā stūrī.
+
+11. Vai tu spēj izveidot .py failu un to izpildīt? Kas notiek, ja mēģini palaist failu, kura nav?
+Nevar palaist failu kurš neeksistē.
+
+12. Vai tu uzrakstīji un palaidi savu “Hello, world!” programmu? Kas tieši parādījās ekrānā?
+Terminālī parādījās "Hello from Ralfs!"
+
+13. Vai tu veiksmīgi nomainīji izvades tekstu? Ko tu mainīji un kāds bija rezultāts?
+Veiksmīgi nomainīju izvades tekstu. Ievadīju vairākas līnijas un katru numurēju.
+
+
+#Refleksija
+14. Kāpēc programmētājam ir jābūt precīzam katrā instrukcijā? Ko dators nevar “uzminēt”? 
+Dators nevar uzminēt ko lietotājs vēlēsies darīt tālāk. Ir jābūt skaidrām instrukcijām.
+
+15. Kāpēc precizitāte ir svarīga programmās? Apraksti vienu situāciju, kur neliela neprecizitāte varētu radīt lielu problēmu. 
+Ja kaut viens nepareizs komats vai punkts būs pieļauts koda - tas nestrādās, vai strādās nepareizi.

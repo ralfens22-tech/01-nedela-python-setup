@@ -1,0 +1,20 @@
+1. Pieslēgšanās epastam:
+1.1 Atver interneta pārlūku vai e-pasta lietotni.
+1.2 Ievadi e-pasta adresi.
+1.3 Ievadi paroli.
+1.4 Nospied pogu "Ielogoties".
+1.5 Ja parole ir pareiza → atveras e-pasta inbox.
+1.6 Ja parole nav pareiza → parādās kļūda.
+1.7 Ja nepieciešams → ievadi paroli vēlreiz vai izmanto “Forgot password”.
+1.8 Process beidzas, kad e-pasts ir veiksmīgi atvērts.
+
+2. Kafijas iegāde
+2.1 Nepieciešams ieiet kafejnīcā vai pieiet pie kafijas automāta.
+2.2 Apskatīt pieejamās kafijas.
+2.3 Izvēlēties vēlamo kafiju.
+2.4 Veikt pasūtījumu vai nospiest izvēlēto pogu automātā.
+2.5 Samaksā.
+2.6 Sagaidīt, kamēr kafija tiek pagatavota.
+2.7 Paņemt kafiju.
+2.8 Pateicies pārdevējai/am un pamet notikuma vietu.
+2.9 Process beidzas.
