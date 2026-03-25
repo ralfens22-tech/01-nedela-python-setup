@@ -1,4 +1,4 @@
-# type_explorer.py
+# Type Explorer
 
 # =========================
 # 1. PAMATA TIPI (katram vismaz 2 vērtības)
