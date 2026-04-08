@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Projektu Prezentācija</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: system-ui, sans-serif;
+            background: #f0f2f5;
+            color: #333;
+        }
+
+        header {
+            background: #1a1a2e;
+            color: white;
+            padding: 20px 40px;
+        }
+
+        header h1 { font-size: 1.5rem; }
+
+        header p {
+            color: #9ca3af;
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            padding: 24px 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 22px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+        }
+
+        .card h2 {
+            font-size: 1.1rem;
+            color: #1a1a2e;
+            margin-bottom: 3px;
+        }
+
+        .card .subtitle {
+            font-size: 0.78rem;
+            color: #9ca3af;
+            margin-bottom: 16px;
+            font-family: monospace;
+        }
+
+        .divider {
+            height: 1px;
+            background: #f3f4f6;
+            margin: 14px 0;
+        }
+
+        /* Formas */
+        .form-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            flex: 1;
+            min-width: 80px;
+            padding: 8px 10px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 0.88rem;
+            outline: none;
+            transition: border-color 0.15s;
+        }
+
+        input:focus { border-color: #2563eb; }
+
+        .hint {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            margin-bottom: 10px;
+        }
+
+        /* Pogas */
+        button {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: background 0.15s;
+        }
+
+        .btn-blue   { background: #2563eb; color: white; }
+        .btn-blue:hover { background: #1d4ed8; }
+
+        .btn-teal   { background: #0891b2; color: white; }
+        .btn-teal:hover { background: #0e7490; }
+
+        .btn-red    { background: #dc2626; color: white; }
+        .btn-red:hover { background: #b91c1c; }
+
+        .btn-gray   { background: #e5e7eb; color: #374151; }
+        .btn-gray:hover { background: #d1d5db; }
+
+        .action-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        /* Ziņojumu josla */
+        .flash {
+            display: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+
+        .flash.ok  { background: #d1fae5; color: #065f46; }
+        .flash.err { background: #fee2e2; color: #991b1b; }
+
+        /* Tabulas */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.84rem;
+            margin-top: 10px;
+        }
+
+        th {
+            background: #f9fafb;
+            text-align: left;
+            padding: 8px 10px;
+            border-bottom: 2px solid #e5e7eb;
+            color: #6b7280;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: #fafafa; }
+
+        .empty {
+            text-align: center;
+            color: #9ca3af;
+            padding: 24px;
+            font-size: 0.88rem;
+        }
+
+        /* Kopsummas josla */
+        .total-bar {
+            display: none;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 6px;
+            padding: 10px 14px;
+            margin-top: 12px;
+            font-size: 0.9rem;
+            color: #1e40af;
+            font-weight: 600;
+        }
+
+        @media (max-width: 700px) {
+            .grid { grid-template-columns: 1fr; padding: 16px; }
+            header { padding: 16px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🐍 Python Projektu Prezentācija</h1>
+    <p>Tilta uzdevums: contacts.py &nbsp;|&nbsp; 1.–3. solis: shop.py · storage.py · utils.py</p>
+</header>
+
+<div class="grid">
+
+    <!-- ═══════════════════════════════════════════
+         KONTAKTU GRĀMATIŅA
+    ═══════════════════════════════════════════ -->
+    <div class="card">
+        <h2>📒 Kontaktu grāmatiņa</h2>
+        <p class="subtitle">contacts.py · contacts.json</p>
+
+        <div id="c-flash" class="flash"></div>
+
+        <!-- Pievienošanas forma -->
+        <div class="form-row">
+            <input type="text" id="c-name"  placeholder="Vārds Uzvārds">
+            <input type="text" id="c-phone" placeholder="+371 2xxxxxxx">
+            <button class="btn-blue" onclick="addContact()">Pievienot</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Meklēšanas forma -->
+        <div class="form-row">
+            <input type="text" id="c-search" placeholder="Meklēt pēc vārda...">
+            <button class="btn-gray" onclick="searchContacts()">Meklēt</button>
+            <button class="btn-gray" onclick="loadContacts()">Visi</button>
+        </div>
+
+        <!-- Kontaktu tabula -->
+        <div id="c-table"></div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         IEPIRKUMU SARAKSTS
+    ═══════════════════════════════════════════ -->
+    <div class="card">
+        <h2>🛒 Iepirkumu saraksts</h2>
+        <p class="subtitle">shop.py · storage.py · utils.py · shopping.json · prices.json</p>
+
+        <div id="s-flash" class="flash"></div>
+
+        <!-- Pievienošanas forma -->
+        <div class="form-row">
+            <input type="text"   id="s-name"  placeholder="Produkts">
+            <input type="number" id="s-qty"   placeholder="Skaits" min="1" style="max-width:80px">
+            <input type="number" id="s-price" placeholder="EUR cena" min="0.01" step="0.01" style="max-width:100px">
+            <button class="btn-blue" onclick="addItem()">Pievienot</button>
+        </div>
+        <p class="hint">
+            Cenu var atstāt tukšu — programma to ņem no cenu datubāzes automātiski.
+        </p>
+
+        <!-- Iepirkumu tabula -->
+        <div id="s-table"></div>
+
+        <!-- Kopsummas josla -->
+        <div id="s-total" class="total-bar"></div>
+
+        <!-- Darbību pogas -->
+        <div class="action-row">
+            <button class="btn-teal" onclick="loadTotal()">Aprēķināt kopā</button>
+            <button class="btn-red"  onclick="clearList()">Notīrīt sarakstu</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+// ─── Palīgfunkcijas ──────────────────────────────────────────────
+
+// Parāda zaļu vai sarkanu ziņojumu uz 4 sekundēm.
+function flash(id, msg, type) {
+    const el = document.getElementById(id);
+    el.textContent = msg;
+    el.className = 'flash ' + (type === 'ok' ? 'ok' : 'err');
+    el.style.display = 'block';
+    setTimeout(() => { el.style.display = 'none'; }, 4000);
+}
+
+// Attēlo kontaktu sarakstu kā tabulu.
+function renderContacts(contacts) {
+    const div = document.getElementById('c-table');
+    if (!contacts.length) {
+        div.innerHTML = '<p class="empty">Nav saglabātu kontaktu.</p>';
+        return;
+    }
+    div.innerHTML = `
+        <table>
+            <thead><tr><th>#</th><th>Vārds</th><th>Tālrunis</th></tr></thead>
+            <tbody>
+                ${contacts.map((c, i) =>
+                    `<tr><td>${i + 1}</td><td>${c.name}</td><td>${c.phone}</td></tr>`
+                ).join('')}
+            </tbody>
+        </table>`;
+}
+
+// Attēlo iepirkumu sarakstu kā tabulu.
+function renderItems(items) {
+    const div = document.getElementById('s-table');
+    if (!items.length) {
+        div.innerHTML = '<p class="empty">Iepirkumu saraksts ir tukšs.</p>';
+        return;
+    }
+    div.innerHTML = `
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Produkts</th>
+                    <th>Skaits</th>
+                    <th>EUR/gab.</th>
+                    <th>Kopā</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${items.map((it, i) => `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td>${it.name}</td>
+                        <td>× ${it.qty}</td>
+                        <td>${it.price.toFixed(2)}</td>
+                        <td>${it.line_total.toFixed(2)}</td>
+                    </tr>`
+                ).join('')}
+            </tbody>
+        </table>`;
+}
+
+// ─── Kontaktu API ────────────────────────────────────────────────
+
+async function loadContacts() {
+    const res = await fetch('/api/contacts');
+    renderContacts(await res.json());
+}
+
+async function addContact() {
+    const name  = document.getElementById('c-name').value.trim();
+    const phone = document.getElementById('c-phone').value.trim();
+
+    const res = await fetch('/api/contacts/add', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ name, phone }),
+    });
+    const data = await res.json();
+
+    if (res.ok) {
+        flash('c-flash', data.message, 'ok');
+        document.getElementById('c-name').value  = '';
+        document.getElementById('c-phone').value = '';
+        loadContacts();
+    } else {
+        flash('c-flash', data.error, 'err');
+    }
+}
+
+async function searchContacts() {
+    const q = document.getElementById('c-search').value.trim();
+    if (!q) { loadContacts(); return; }
+
+    const res  = await fetch('/api/contacts/search?q=' + encodeURIComponent(q));
+    const data = await res.json();
+
+    if (res.ok) {
+        renderContacts(data);
+        flash('c-flash', `Atrasti ${data.length} kontakti.`, 'ok');
+    } else {
+        flash('c-flash', data.error, 'err');
+    }
+}
+
+// ─── Iepirkumu API ────────────────────────────────────────────────
+
+async function loadItems() {
+    const res = await fetch('/api/shopping');
+    renderItems(await res.json());
+}
+
+async function addItem() {
+    const name  = document.getElementById('s-name').value.trim();
+    const qty   = document.getElementById('s-qty').value;
+    const price = document.getElementById('s-price').value;
+
+    const res = await fetch('/api/shopping/add', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ name, qty: parseInt(qty) || 0, price: price ? parseFloat(price) : null }),
+    });
+    const data = await res.json();
+
+    if (res.ok) {
+        flash('s-flash', data.message, 'ok');
+        document.getElementById('s-name').value  = '';
+        document.getElementById('s-qty').value   = '';
+        document.getElementById('s-price').value = '';
+        document.getElementById('s-total').style.display = 'none';
+        loadItems();
+    } else {
+        // Ja cena nav zināma, fokusē cenas lauku.
+        if (data.need_price) {
+            document.getElementById('s-price').focus();
+        }
+        flash('s-flash', data.error, 'err');
+    }
+}
+
+async function loadTotal() {
+    const res  = await fetch('/api/shopping/total');
+    const data = await res.json();
+    const bar  = document.getElementById('s-total');
+    bar.textContent = `Kopā: ${data.total.toFixed(2)} EUR  ·  ${data.units} vienības  ·  ${data.products} produkti`;
+    bar.style.display = 'block';
+}
+
+async function clearList() {
+    if (!confirm('Notīrīt visu iepirkumu sarakstu?')) return;
+
+    const res  = await fetch('/api/shopping/clear', { method: 'POST' });
+    const data = await res.json();
+    flash('s-flash', data.message, 'ok');
+    document.getElementById('s-total').style.display = 'none';
+    loadItems();
+}
+
+// ─── Ielāde pie lapas atvēršanas ──────────────────────────────────
+loadContacts();
+loadItems();
+</script>
+</body>
+</html>
