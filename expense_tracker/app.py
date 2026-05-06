@@ -5,6 +5,7 @@ Galvenā programma — interaktīvā izvēlne un lietotāja vadības loģika.
 from datetime import date
 from storage import load_expenses, save_expenses
 from logic import sum_total, sum_by_category, filter_by_month, get_available_months
+from export import export_to_csv
 
 
 CATEGORIES = [
@@ -47,6 +48,7 @@ def show_menu():
     print("3) Filtrēt pēc mēneša")
     print("4) Kopsavilkums pa kategorijām")
     print("5) Dzēst izdevumu")
+    print("6) Eksportēt CSV")
     print("7) Iziet")
     return input("\nIzvēlies darbību (1-7): ").strip()
 
@@ -212,6 +214,24 @@ def delete_expense(expenses):
             print("❌ Lūdzu ievadi numuru")
 
 
+def export_expenses(expenses):
+    """Eksportē izdevumus CSV failā."""
+    if not expenses:
+        print("\n❌ Nav reģistrētu izdevumu, ko eksportēt")
+        return
+    
+    default_file = "izdevumi.csv"
+    filename = input(f"Faila nosaukums [{default_file}]: ").strip()
+    
+    if not filename:
+        filename = default_file
+    
+    if export_to_csv(expenses, filename):
+        print(f"\n✓ Eksportēts: {len(expenses)} ieraksti -> {filename}")
+    else:
+        print(f"\n❌ Kļūda eksportējot failu")
+
+
 def main():
     """Galvenā programmas cilpa."""
     expenses = load_expenses()
@@ -233,6 +253,9 @@ def main():
         
         elif choice == "5":
             delete_expense(expenses)
+        
+        elif choice == "6":
+            export_expenses(expenses)
         
         elif choice == "7":
             print("\nUz redzēšanos!")
