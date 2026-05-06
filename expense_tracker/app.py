@@ -4,7 +4,7 @@ Galvenā programma — interaktīvā izvēlne un lietotāja vadības loģika.
 
 from datetime import date
 from storage import load_expenses, save_expenses
-from logic import sum_total
+from logic import sum_total, sum_by_category, filter_by_month, get_available_months
 
 
 CATEGORIES = [
@@ -44,6 +44,9 @@ def show_menu():
     print("═════════════════════════════════")
     print("1) Pievienot izdevumu")
     print("2) Parādīt izdevumus")
+    print("3) Filtrēt pēc mēneša")
+    print("4) Kopsavilkums pa kategorijām")
+    print("5) Dzēst izdevumu")
     print("7) Iziet")
     return input("\nIzvēlies darbību (1-7): ").strip()
 
@@ -105,21 +108,22 @@ def add_expense(expenses):
     print(f"\n✓ Pievienots: {date_input} | {category} | {amount:.2f} EUR | {description}")
 
 
-def display_expenses(expenses):
-    """Parāda visus izdevumus formatēti."""
+def display_expenses(expenses, title="Izdevumi"):
+    """Parāda izdevumus formatēti."""
     if not expenses:
-        print("\n❌ Nav reģistrētu izdevumu")
+        print(f"\n❌ Nav reģistrētu {title.lower()}")
         return
     
-    print("\n" + "─" * 70)
+    print(f"\n{title}:")
+    print("─" * 70)
     print(f"{'Datums':<12} {'Summa':>10} {'Kategorija':<18} {'Apraksts'}")
     print("─" * 70)
     
-    for expense in expenses:
+    for i, expense in enumerate(expenses, 1):
         date_str = expense["date"]
         amount_str = f"{expense['amount']:.2f} EUR"
         category = expense["category"]
-        description = expense["description"][:20]  # Saīsina garu aprakstu
+        description = expense["description"][:20]
         
         print(f"{date_str:<12} {amount_str:>10} {category:<18} {description}")
     
@@ -127,6 +131,85 @@ def display_expenses(expenses):
     total = sum_total(expenses)
     print(f"  Kopā: {total:.2f} EUR ({len(expenses)} ieraksti)")
     print()
+
+
+def filter_and_display(expenses):
+    """Filtrē izdevumus pēc mēneša un parāda tos."""
+    if not expenses:
+        print("\n❌ Nav reģistrētu izdevumu")
+        return
+    
+    available_months = get_available_months(expenses)
+    
+    if not available_months:
+        print("\n❌ Nav datu par jebkādu mēnesi")
+        return
+    
+    print("\nPieejamie mēneši:")
+    for i, (year, month) in enumerate(available_months, 1):
+        print(f"  {i}) {year}-{month:02d}")
+    
+    while True:
+        choice = input("Izvēlies mēnesi (numurs): ").strip()
+        try:
+            idx = int(choice) - 1
+            if 0 <= idx < len(available_months):
+                year, month = available_months[idx]
+                break
+            else:
+                print(f"❌ Lūdzu izvēlies numuru no 1 līdz {len(available_months)}")
+        except ValueError:
+            print("❌ Lūdzu ievadi numuru")
+    
+    filtered = filter_by_month(expenses, year, month)
+    display_expenses(filtered, f"{year}-{month:02d} izdevumi")
+
+
+def show_category_summary(expenses):
+    """Parāda summas pa kategorijām."""
+    if not expenses:
+        print("\n❌ Nav reģistrētu izdevumu")
+        return
+    
+    totals = sum_by_category(expenses)
+    
+    print("\nKopsavilkums pa kategorijām:")
+    print("───────────────────────────")
+    
+    for category, total in sorted(totals.items()):
+        print(f"  {category:<20} {total:>10.2f} EUR")
+    
+    print("───────────────────────────")
+    grand_total = sum_total(expenses)
+    print(f"  KOPĀ: {grand_total:>26.2f} EUR")
+    print()
+
+
+def delete_expense(expenses):
+    """Dzēš izdevumu pēc indeksa."""
+    if not expenses:
+        print("\n❌ Nav reģistrētu izdevumu")
+        return
+    
+    display_expenses(expenses, "Izdevumi")
+    
+    while True:
+        choice = input("Kuru dzēst? (numurs vai 0 lai atceltu): ").strip()
+        try:
+            idx = int(choice)
+            if idx == 0:
+                print("Dzēšana atcelta")
+                return
+            elif 1 <= idx <= len(expenses):
+                deleted = expenses.pop(idx - 1)
+                save_expenses(expenses)
+                print(f"\n✓ Dzēsts: {deleted['date']} | {deleted['category']} | "
+                      f"{deleted['amount']:.2f} EUR | {deleted['description']}")
+                return
+            else:
+                print(f"❌ Lūdzu izvēlies numuru no 1 līdz {len(expenses)}")
+        except ValueError:
+            print("❌ Lūdzu ievadi numuru")
 
 
 def main():
@@ -141,6 +224,15 @@ def main():
         
         elif choice == "2":
             display_expenses(expenses)
+        
+        elif choice == "3":
+            filter_and_display(expenses)
+        
+        elif choice == "4":
+            show_category_summary(expenses)
+        
+        elif choice == "5":
+            delete_expense(expenses)
         
         elif choice == "7":
             print("\nUz redzēšanos!")
