@@ -20,13 +20,14 @@ def export_to_csv(expenses, filepath):
         return False
     
     try:
+        # Atver CSV failu ar UTF-8 BOM kodējumu, lai tas labāk atvērtos Excel
         with open(filepath, "w", newline="", encoding="utf-8-sig") as f:
             writer = csv.writer(f)
             
-            # Virsraksti
+            # Galvenes rindā ieraksta kolonnas nosaukumus
             writer.writerow(["Datums", "Summa", "Kategorija", "Apraksts"])
             
-            # Dati
+            # Katru izdevumu ieraksta kā jaunu CSV rindu
             for expense in expenses:
                 writer.writerow([
                     expense["date"],

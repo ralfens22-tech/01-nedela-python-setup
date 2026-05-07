@@ -71,7 +71,8 @@
         }
 
         input[type="text"],
-        input[type="number"] {
+        input[type="number"],
+        select {
             flex: 1;
             min-width: 80px;
             padding: 8px 10px;
@@ -82,7 +83,8 @@
             transition: border-color 0.15s;
         }
 
-        input:focus { border-color: #2563eb; }
+        input:focus,
+        select:focus { border-color: #2563eb; }
 
         .hint {
             font-size: 0.75rem;
@@ -105,6 +107,7 @@
         .btn-blue:hover { background: #1d4ed8; }
 
         .btn-teal   { background: #0891b2; color: white; }
+        .btn-small { padding: 4px 10px; font-size: 0.78rem; }
         .btn-teal:hover { background: #0e7490; }
 
         .btn-red    { background: #dc2626; color: white; }
@@ -252,6 +255,45 @@
             <button class="btn-teal" onclick="loadTotal()">Aprēķināt kopā</button>
             <button class="btn-red"  onclick="clearList()">Notīrīt sarakstu</button>
         </div>
+    </div>
+
+    <div class="card">
+        <h2>💶 Izdevumu izsekotājs</h2>
+        <p class="subtitle">expense_tracker/app.py · logic.py · storage.py · export.py</p>
+
+        <div id="e-flash" class="flash"></div>
+
+        <div class="form-row">
+            <input type="date" id="e-date">
+            <select id="e-category">
+                <option value="">Kategorija</option>
+                <option value="Ēdiens">Ēdiens</option>
+                <option value="Transports">Transports</option>
+                <option value="Izklaide">Izklaide</option>
+                <option value="Komunālie maksājumi">Komunālie maksājumi</option>
+                <option value="Veselība">Veselība</option>
+                <option value="Iepirkšanās">Iepirkšanās</option>
+                <option value="Cits">Cits</option>
+            </select>
+            <input type="number" id="e-amount" placeholder="EUR" min="0" step="0.01" style="max-width:120px">
+        </div>
+
+        <div class="form-row">
+            <input type="text" id="e-description" placeholder="Apraksts">
+            <button class="btn-blue" onclick="addExpense()">Pievienot</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="form-row">
+            <select id="e-month"></select>
+            <button class="btn-gray" onclick="filterExpenses()">Filtrēt</button>
+            <button class="btn-gray" onclick="loadExpenses()">Visi</button>
+            <button class="btn-teal" onclick="loadExpenseSummary()">Kopsavilkums</button>
+        </div>
+
+        <div id="e-table"></div>
+        <div id="e-total" class="total-bar"></div>
     </div>
 
 </div>
@@ -414,9 +456,144 @@ async function clearList() {
     loadItems();
 }
 
+// ─── Izdevumu API ────────────────────────────────────────────────
+
+function renderExpenses(expenses) {
+    const div = document.getElementById('e-table');
+    if (!expenses.length) {
+        div.innerHTML = '<p class="empty">Nav reģistrētu izdevumu.</p>';
+        return;
+    }
+
+    div.innerHTML = `
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Datums</th>
+                    <th>Summa</th>
+                    <th>Kategorija</th>
+                    <th>Apraksts</th>
+                    <th>Dzēst</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${expenses.map((exp, i) => `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td>${exp.date}</td>
+                        <td>${exp.amount.toFixed(2)} EUR</td>
+                        <td>${exp.category}</td>
+                        <td>${exp.description}</td>
+                        <td><button class="btn-red btn-small" onclick="deleteExpense(${i + 1})">Dzēst</button></td>
+                    </tr>`).join('')}
+            </tbody>
+        </table>`;
+}
+
+function renderExpenseMonths(months) {
+    const select = document.getElementById('e-month');
+    if (!months.length) {
+        select.innerHTML = '<option value="">Nav pieejamu mēnešu</option>';
+        return;
+    }
+    select.innerHTML = '<option value="">Izvēlies mēnesi</option>' +
+        months.map(m => `<option value="${m.year}-${String(m.month).padStart(2, '0')}">${m.label}</option>`).join('');
+}
+
+function renderExpenseSummary(data) {
+    const bar = document.getElementById('e-total');
+    const lines = [`Kopā: ${data.grand_total.toFixed(2)} EUR`];
+    for (const [category, sum] of Object.entries(data.totals)) {
+        lines.push(`${category}: ${sum.toFixed(2)} EUR`);
+    }
+    bar.textContent = lines.join(' · ');
+    bar.style.display = 'block';
+}
+
+async function loadExpenses() {
+    const res = await fetch('/api/expenses');
+    const data = await res.json();
+    renderExpenses(data);
+    loadExpenseMonths();
+}
+
+async function loadExpenseMonths() {
+    const res = await fetch('/api/expenses/months');
+    const data = await res.json();
+    renderExpenseMonths(data);
+}
+
+async function addExpense() {
+    const date = document.getElementById('e-date').value;
+    const category = document.getElementById('e-category').value;
+    const amount = document.getElementById('e-amount').value;
+    const description = document.getElementById('e-description').value.trim();
+    const amountValue = amount === '' ? null : parseFloat(amount);
+
+    const res = await fetch('/api/expenses/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ date, category, amount: amountValue, description }),
+    });
+    const data = await res.json();
+
+    if (res.ok) {
+        flash('e-flash', data.message, 'ok');
+        document.getElementById('e-date').value = '';
+        document.getElementById('e-category').value = '';
+        document.getElementById('e-amount').value = '';
+        document.getElementById('e-description').value = '';
+        document.getElementById('e-total').style.display = 'none';
+        loadExpenses();
+    } else {
+        flash('e-flash', data.error, 'err');
+    }
+}
+
+async function filterExpenses() {
+    const month = document.getElementById('e-month').value;
+    if (!month) {
+        flash('e-flash', 'Izvēlies mēnesi.', 'err');
+        return;
+    }
+
+    const [year, monthValue] = month.split('-');
+    const res = await fetch(`/api/expenses/filter?year=${year}&month=${monthValue}`);
+    const data = await res.json();
+    if (res.ok) {
+        renderExpenses(data);
+    } else {
+        flash('e-flash', data.error, 'err');
+    }
+}
+
+async function deleteExpense(index) {
+    const res = await fetch('/api/expenses/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ index }),
+    });
+    const data = await res.json();
+    if (res.ok) {
+        flash('e-flash', data.message, 'ok');
+        loadExpenses();
+    } else {
+        flash('e-flash', data.error, 'err');
+    }
+}
+
+async function loadExpenseSummary() {
+    const res = await fetch('/api/expenses/summary');
+    const data = await res.json();
+    renderExpenseSummary(data);
+}
+
 // ─── Ielāde pie lapas atvēršanas ──────────────────────────────────
 loadContacts();
 loadItems();
+loadExpenses();
+loadExpenseSummary();
 </script>
 </body>
 </html>

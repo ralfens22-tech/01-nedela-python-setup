@@ -16,6 +16,7 @@ def sum_total(expenses):
     if not expenses:
         return 0.0
     
+    # Sastāda summu no visām izdevumu summām
     total = sum(exp["amount"] for exp in expenses)
     return round(total, 2)
 
@@ -33,9 +34,10 @@ def sum_by_category(expenses):
     totals = {}
     for expense in expenses:
         category = expense["category"]
+        # Pievieno vai papildina summu konkrētajai kategorijai
         totals[category] = totals.get(category, 0) + expense["amount"]
     
-    # Noapaļo līdz 2 zīmēm aiz komata
+    # Noapaļo rezultātu, lai izvade būtu tīra
     return {cat: round(total, 2) for cat, total in totals.items()}
 
 
@@ -55,6 +57,7 @@ def filter_by_month(expenses, year, month):
     
     result = []
     for expense in expenses:
+        # Pārvērš datuma virkni datuma objektā un salīdzina gadu un mēnesi
         date_obj = datetime.strptime(expense["date"], "%Y-%m-%d")
         if date_obj.year == year and date_obj.month == month:
             result.append(expense)
@@ -77,6 +80,7 @@ def get_available_months(expenses):
     months = set()
     for expense in expenses:
         date_obj = datetime.strptime(expense["date"], "%Y-%m-%d")
+        # Saglabā unikālus gadus un mēnešus
         months.add((date_obj.year, date_obj.month))
     
     return sorted(list(months))

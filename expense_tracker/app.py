@@ -2,6 +2,9 @@
 Galvenā programma — interaktīvā izvēlne un lietotāja vadības loģika.
 """
 
+# Šis modulis vada izvēlni un lietotāja ievadi.
+# Tas lasa un saglabā izdevumus, izmantojot storage, aprēķina statistiku ar logic
+# un eksportē CSV failu ar export moduļa palīdzību.
 from datetime import date
 from storage import load_expenses, save_expenses
 from logic import sum_total, sum_by_category, filter_by_month, get_available_months
@@ -23,6 +26,7 @@ def is_valid_date(date_str):
     """Pārbauda, vai teksts ir derīgs datums YYYY-MM-DD formātā."""
     from datetime import datetime
     try:
+        # Mēģina pārvērst ievadi par datetime objektu
         datetime.strptime(date_str, "%Y-%m-%d")
         return True
     except ValueError:
@@ -33,6 +37,7 @@ def is_valid_amount(amount_str):
     """Pārbauda, vai teksts ir derīgs pozitīvs skaitlis."""
     try:
         amount = float(amount_str)
+        # Atgriež True tikai tad, ja summa nav negatīva
         return amount >= 0
     except ValueError:
         return False
@@ -57,7 +62,7 @@ def add_expense(expenses):
     """Pievieno jaunu izdevumu ar validāciju."""
     print("\n--- Pievienot izdevumu ---")
     
-    # Datums
+    # Datuma ievade un validācija
     while True:
         default_date = str(date.today())
         date_input = input(f"Datums (YYYY-MM-DD) [{default_date}]: ").strip()
@@ -68,7 +73,7 @@ def add_expense(expenses):
             break
         print("❌ Nepareizs datums! Izmanto formātu YYYY-MM-DD")
     
-    # Kategorija
+    # Kategorijas izvēle no noteiktā saraksta
     print("\nKategorija:")
     for i, cat in enumerate(CATEGORIES, 1):
         print(f"  {i}) {cat}")
@@ -85,7 +90,7 @@ def add_expense(expenses):
         except ValueError:
             print("❌ Lūdzu ievadi numuru")
     
-    # Summa
+    # Summa un validācija
     while True:
         amount_input = input("Summa (EUR): ").strip()
         if is_valid_amount(amount_input):
@@ -96,7 +101,7 @@ def add_expense(expenses):
     # Apraksts
     description = input("Apraksts: ").strip()
     
-    # Pievieno izdevumu
+    # Sagatavo izdevuma ierakstu un saglabā
     expense = {
         "date": date_input,
         "amount": round(amount, 2),
@@ -116,6 +121,7 @@ def display_expenses(expenses, title="Izdevumi"):
         print(f"\n❌ Nav reģistrētu {title.lower()}")
         return
     
+    # Galvene ar kolonnu nosaukumiem
     print(f"\n{title}:")
     print("─" * 70)
     print(f"{'Datums':<12} {'Summa':>10} {'Kategorija':<18} {'Apraksts'}")
@@ -127,6 +133,7 @@ def display_expenses(expenses, title="Izdevumi"):
         category = expense["category"]
         description = expense["description"][:20]
         
+        # Rindas formatēta izvade ar platumu un līdzinājumu
         print(f"{date_str:<12} {amount_str:>10} {category:<18} {description}")
     
     print("─" * 70)
@@ -147,6 +154,7 @@ def filter_and_display(expenses):
         print("\n❌ Nav datu par jebkādu mēnesi")
         return
     
+    # Parāda pieejamos mēnešus, pēc kuriem var filtrēt
     print("\nPieejamie mēneši:")
     for i, (year, month) in enumerate(available_months, 1):
         print(f"  {i}) {year}-{month:02d}")
@@ -179,6 +187,7 @@ def show_category_summary(expenses):
     print("───────────────────────────")
     
     for category, total in sorted(totals.items()):
+        # Parāda summu katrai kategorijai atsevišķi
         print(f"  {category:<20} {total:>10.2f} EUR")
     
     print("───────────────────────────")
@@ -226,6 +235,7 @@ def export_expenses(expenses):
     if not filename:
         filename = default_file
     
+    # Izsauc eksportēšanas funkciju un paziņo par rezultātu
     if export_to_csv(expenses, filename):
         print(f"\n✓ Eksportēts: {len(expenses)} ieraksti -> {filename}")
     else:
@@ -234,6 +244,7 @@ def export_expenses(expenses):
 
 def main():
     """Galvenā programmas cilpa."""
+    # Ielādē iepriekš saglabātos izdevumus
     expenses = load_expenses()
     
     while True:
