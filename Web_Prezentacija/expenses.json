@@ -10,5 +10,11 @@
     "amount": 1255.0,
     "category": "Veselība",
     "description": "Test3"
+  },
+  {
+    "date": "2023-05-25",
+    "amount": 1.0,
+    "category": "Izklaide",
+    "description": "100"
   }
 ]
